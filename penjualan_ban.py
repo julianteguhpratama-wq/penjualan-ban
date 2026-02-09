@@ -35,8 +35,7 @@ for i in range(1, 11):
     km.fit(X)
     clusters.append(km.inertia_)
 
-fig_elbow, ax_elbow = plt.subplots(figsize=(10, 6))
-
+fig_elbow, ax_elbow = plt.subplots(figsize=(12, 8))
 sns.lineplot(
     x=list(range(1, 11)),
     y=clusters,
@@ -48,22 +47,24 @@ ax_elbow.set_title('Metode Elbow')
 ax_elbow.set_xlabel('Jumlah Cluster (k)')
 ax_elbow.set_ylabel('Inertia')
 
-# ===== PANAH ELBOW (TETAP SEPERTI AWAL) =====
+# Panah elbow
 ax_elbow.annotate(
     'Possible Elbow Point',
-    xy=(2, clusters[1]),
-    xytext=(2, clusters[1] * 0.1),
+    xy=(2, 700000),
+    xytext=(2, 2000),
+    xycoords='data',
     arrowprops=dict(arrowstyle='->', color='blue', lw=2)
 )
 
 ax_elbow.annotate(
     'Possible Elbow Point',
-    xy=(4, clusters[3]),
-    xytext=(4, clusters[3] * 3),
+    xy=(4, 190000),
+    xytext=(4, 600000),
+    xycoords='data',
     arrowprops=dict(arrowstyle='->', color='blue', lw=2)
 )
 
-st.pyplot(fig_elbow, use_container_width=True)
+st.pyplot(fig_elbow)
 
 # ================== SLIDER JUMLAH CLUSTER ==================
 st.sidebar.header("Pengaturan Cluster")
@@ -127,7 +128,7 @@ def k_means_label_fix(n_clust):
             color='black'
         )
 
-    ax_cluster.set_title('Visualisasi Hasil K-Means Clustering')
+    ax_cluster.set_title('Posisi Data Berdasarkan Cluster')
     ax_cluster.set_xlabel('Harga')
     ax_cluster.set_ylabel('Terjual')
 
@@ -148,3 +149,4 @@ def k_means_label_fix(n_clust):
 
 # ================== EKSEKUSI ==================
 k_means_label_fix(clust)
+
