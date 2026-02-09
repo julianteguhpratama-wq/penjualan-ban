@@ -7,7 +7,7 @@ from sklearn.cluster import KMeans
 st.set_page_config(page_title="Clustering Penjualan Ban", layout="wide")
 
 # ================== LOAD DATA ==================
-df = pd.read_csv('data_ban.csv', sep=';')
+df = pd.read_csv('databansk.csv', sep=';')
 
 # Simpan kolom Ban
 ban_col = df[['Ban']]
