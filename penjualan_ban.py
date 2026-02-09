@@ -4,20 +4,26 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.cluster import KMeans
 
+st.set_page_config(page_title="Clustering Penjualan Ban", layout="wide")
+
 # ================== LOAD DATA ==================
 df = pd.read_csv('data_ban.csv', sep=';')
 
+# Simpan kolom Ban
+ban_col = df[['Ban']]
+
+# Data numerik untuk K-Means
 X = df.drop(['Ban'], axis=1)
 
 # ================== TAMPIL DATA ==================
-st.header("Isi Dataset")
+st.header("Isi Dataset Awal")
 st.dataframe(df)
 
-st.header("Data Setelah Menghapus Atribut Tidak Penting")
+st.header("Data Setelah Menghapus Atribut Non-Numerik")
 st.dataframe(X)
 
 # ================== ELBOW METHOD ==================
-st.header("Cluster Optimal Berdasarkan Metode Elbow")
+st.header("Penentuan Jumlah Cluster Optimal (Metode Elbow)")
 
 clusters = []
 for i in range(1, 11):
@@ -37,30 +43,19 @@ ax_elbow.set_title('Metode Elbow')
 ax_elbow.set_xlabel('Jumlah Cluster (k)')
 ax_elbow.set_ylabel('Inertia')
 
-# Panah elbow
-ax_elbow.annotate(
-    'Possible Elbow Point',
-    xy=(2, 700000),
-    xytext=(2, 2000),
-    xycoords='data',
-    arrowprops=dict(arrowstyle='->', color='blue', lw=2)
-)
-
-ax_elbow.annotate(
-    'Possible Elbow Point',
-    xy=(4, 190000),
-    xytext=(4, 600000),
-    xycoords='data',
-    arrowprops=dict(arrowstyle='->', color='blue', lw=2)
-)
-
 st.pyplot(fig_elbow)
 
 # ================== SLIDER JUMLAH CLUSTER ==================
-st.sidebar.subheader("Nilai Jumlah (K)")
-clust = st.sidebar.slider("Pilih Jumlah Cluster :", 2, 10, 3, 1)
+st.sidebar.header("Pengaturan Clustering")
+clust = st.sidebar.slider(
+    "Pilih Jumlah Cluster (k)",
+    min_value=2,
+    max_value=10,
+    value=3,
+    step=1
+)
 
-# ================== K-MEANS DENGAN LABEL FINAL ==================
+# ================== FUNGSI K-MEANS + FIX LABEL ==================
 def k_means_label_fix(n_clust):
     X_plot = X.copy()
 
@@ -69,7 +64,7 @@ def k_means_label_fix(n_clust):
 
     labels_raw = kmeans.labels_
 
-    # Hitung rata-rata Terjual per cluster
+    # Hitung rata-rata Terjual tiap cluster
     cluster_mean = (
         X_plot.assign(Labels=labels_raw)
         .groupby('Labels')['Terjual']
@@ -83,10 +78,10 @@ def k_means_label_fix(n_clust):
         for new_label, old_label in enumerate(cluster_mean.index)
     }
 
-    # Simpan hanya LABEL FINAL
+    # Simpan label final yang stabil
     X_plot['Label'] = [label_mapping[l] for l in labels_raw]
 
-    # ================== VISUALISASI ==================
+    # ================== VISUALISASI CLUSTER ==================
     fig_cluster, ax_cluster = plt.subplots(figsize=(10, 8))
 
     sns.scatterplot(
@@ -113,15 +108,24 @@ def k_means_label_fix(n_clust):
             color='black'
         )
 
-    ax_cluster.set_title('Posisi Data Berdasarkan Cluster')
+    ax_cluster.set_title('Visualisasi Hasil K-Means Clustering')
     ax_cluster.set_xlabel('Harga')
     ax_cluster.set_ylabel('Terjual')
 
     st.header("Visualisasi Hasil Clustering")
     st.pyplot(fig_cluster)
 
-    st.subheader("Hasil K-Means Clustering")
-    st.dataframe(X_plot)
+    # ================== TABEL AKHIR (DENGAN KOLOM BAN) ==================
+    hasil_akhir = pd.concat(
+        [
+            ban_col.reset_index(drop=True),
+            X_plot.reset_index(drop=True)
+        ],
+        axis=1
+    )
+
+    st.subheader("Tabel Hasil Akhir K-Means Clustering")
+    st.dataframe(hasil_akhir)
 
 # ================== EKSEKUSI ==================
 k_means_label_fix(clust)
