@@ -63,9 +63,9 @@ ax_elbow.annotate(
 st.pyplot(fig_elbow)
 
 # ================== SLIDER JUMLAH CLUSTER ==================
-st.sidebar.header("Pengaturan Clustering")
+st.sidebar.header("Nilai Jumlah (K)")
 clust = st.sidebar.slider(
-    "Pilih Jumlah Cluster (k)",
+    "Pilih Jumlah Cluster :",
     min_value=2,
     max_value=10,
     value=3,
@@ -146,4 +146,5 @@ def k_means_label_fix(n_clust):
 
 # ================== EKSEKUSI ==================
 k_means_label_fix(clust)
+
 
