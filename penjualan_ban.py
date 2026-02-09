@@ -16,7 +16,7 @@ ban_col = df[['Ban']]
 X = df.drop(['Ban'], axis=1)
 
 # ================== TAMPIL DATA ==================
-st.header("Isi Dataset Awal")
+st.header("Isi Dataset")
 st.dataframe(df)
 
 st.header("Data Setelah Menghapus Atribut Non-Numerik")
@@ -141,8 +141,9 @@ def k_means_label_fix(n_clust):
         axis=1
     )
 
-    st.subheader("Tabel Hasil Akhir K-Means Clustering")
+    st.subheader("Hasil Akhir K-Means Clustering")
     st.dataframe(hasil_akhir)
 
 # ================== EKSEKUSI ==================
 k_means_label_fix(clust)
+
