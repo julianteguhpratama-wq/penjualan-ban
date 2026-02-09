@@ -23,46 +23,41 @@ st.header("Data Setelah Menghapus Atribut Non-Numerik")
 st.dataframe(X)
 
 # ================== ELBOW METHOD ==================
-# ================== ELBOW METHOD ==================
-st.header("Penentuan Jumlah Cluster Optimal (Metode Elbow)")
+st.header("Cluster Optimal Berdasarkan Metode Elbow")
 
 clusters = []
-K = range(1, 11)
-
-for i in K:
+for i in range(1, 11):
     km = KMeans(n_clusters=i, random_state=42)
     km.fit(X)
     clusters.append(km.inertia_)
 
 fig_elbow, ax_elbow = plt.subplots(figsize=(12, 8))
-
 sns.lineplot(
-    x=K,
+    x=list(range(1, 11)),
     y=clusters,
     marker='o',
     ax=ax_elbow
 )
 
-ax_elbow.set_title('Grafik Metode Elbow', fontsize=14)
+ax_elbow.set_title('Metode Elbow')
 ax_elbow.set_xlabel('Jumlah Cluster (k)')
 ax_elbow.set_ylabel('Inertia')
 
-# ===== PENANDA TITIK ELBOW (CONTOH k = 3) =====
-elbow_k = 3
-ax_elbow.scatter(
-    elbow_k,
-    clusters[elbow_k - 1],
-    color='red',
-    s=150,
-    zorder=5
+# Panah elbow
+ax_elbow.annotate(
+    'Possible Elbow Point',
+    xy=(2, 700000),
+    xytext=(2, 2000),
+    xycoords='data',
+    arrowprops=dict(arrowstyle='->', color='blue', lw=2)
 )
 
 ax_elbow.annotate(
-    f'Elbow Point (k = {elbow_k})',
-    xy=(elbow_k, clusters[elbow_k - 1]),
-    xytext=(elbow_k + 1, clusters[elbow_k - 1] * 1.1),
-    arrowprops=dict(arrowstyle='->', color='red', lw=2),
-    fontsize=12
+    'Possible Elbow Point',
+    xy=(4, 190000),
+    xytext=(4, 600000),
+    xycoords='data',
+    arrowprops=dict(arrowstyle='->', color='blue', lw=2)
 )
 
 st.pyplot(fig_elbow)
